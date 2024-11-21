@@ -1,0 +1,47 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    color: white;
+    background-color: black;
+}
+#about{
+    width: 800px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #6d3838;
+    border: 2px solid #ebe7e7;
+}
+#choose {
+    background-color: #b5866f;
+    padding: 30px;
+    border-radius: 10px;
+    border: 4px solid #141313;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 30px; 
+}
+
+#choose label,
+#choose select,
+#choose input,
+#choose button {
+    margin-bottom: 5px; 
+}
+#elements-container{
+    width: 800px;
+    margin-top: 20px;
+    text-align: center;
+}
+img {
+    width: 500px; 
+    height: 400px; 
+    
+}
+
+div{
+    margin: 5px;
+    border: 1px solid #ebe7e7;
+}
