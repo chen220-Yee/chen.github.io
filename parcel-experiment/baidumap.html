@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>百度地图</title>
+  <style>
+    #container {height: 100%; width: 100%;}
+  </style>
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=Ppd06ae2q8mJU3hASHKgTOUQVAvFDRbF"></script>
+  <script type="text/javascript">
+    var map;
+    function initMap() {
+      map = new BMap.Map("container");
+      var point = new BMap.Point(116.404, 39.915); // 设置地图中心点（北京市）
+      map.centerAndZoom(point, 15); // 初始化地图，设置中心点和缩放级别
+
+      // 添加标记点
+      var marker = new BMap.Marker(point);
+      map.addOverlay(marker);
+    }
+    window.onload = initMap;
+  </script>
+</head>
+<body>
+  <div id="container"></div>
+</body>
+</html>
