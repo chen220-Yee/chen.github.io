@@ -35,17 +35,46 @@
     // 创建地图实例
     var map = new AMap.Map("container", {
       zoom: 13,
-      center: [116.39, 39.92],
+      center: [116.39, 39.92], // Default center
       resizeEnable: true
     });
 
-    // 创建点覆盖物
+    // 加载定位插件
+    AMap.plugin(['AMap.Geolocation'], function() {
+      var geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true, // 是否使用高精度定位，默认：true
+        timeout: 10000,          // 超过10秒后停止定位，默认：无穷大
+        buttonOffset: new AMap.Pixel(10, 20), // 定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+        zoomToAccuracy: true,      // 定位成功后调整地图视野范围使定位点中心显示
+      });
+      map.addControl(geolocation);
+      geolocation.getCurrentPosition(function(status, result) {
+        if (status === 'complete') {
+          console.log('定位成功');
+          // 将地图中心移动到当前位置
+          map.setCenter(result.position);
+          // 添加标记 (可选)
+          var marker = new AMap.Marker({
+            position: result.position,
+            map: map
+          });
+        } else {
+          console.log('定位失败', status);
+          // 处理定位失败的情况，例如显示错误信息
+          alert('定位失败：' + result.message);
+        }
+      });
+    });
+
+
+    // 创建点覆盖物 (现在是可选的，因为定位后会添加一个标记)
     var marker = new AMap.Marker({
       position: new AMap.LngLat(116.39, 39.92),
       icon: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
       offset: new AMap.Pixel(-13, -30)
     });
     map.add(marker);
+
 
     // 创建信息窗体
     var infoWindow = new AMap.InfoWindow({
@@ -73,6 +102,50 @@
       strokeStyle: "solid",   // 线样式
     });
     map.add(polyline);
+
+  let currentPointIndex = 0;
+  let animationInterval;
+
+  function animateRoute() {
+    if (currentPointIndex >= markers.length) {
+      clearInterval(animationInterval);
+      return;
+    }
+
+    let marker = markers[currentPointIndex];
+    let nextPoint = markers[currentPointIndex + 1];
+
+
+    if(nextPoint){ //判断是否存在下一个点
+      // 通过插值计算中间点，实现平滑动画
+      let duration = 1000; // 动画持续时间 (毫秒)
+      let startTime = Date.now();
+
+      function animate() {
+        let currentTime = Date.now();
+        let progress = Math.min((currentTime - startTime) / duration, 1);
+
+        let interpolatedLng = marker.getPosition().lng + (nextPoint.getPosition().lng - marker.getPosition().lng) * progress;
+        let interpolatedLat = marker.getPosition().lat + (nextPoint.getPosition().lat - marker.getPosition().lat) * progress;
+        marker.setPosition([interpolatedLng, interpolatedLat]);
+
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          currentPointIndex++;
+          animateRoute(); //继续下一个点动画
+        }
+      }
+      animate();
+    }else{
+      currentPointIndex++; //处理只有一个点的特殊情况
+    }
+  }
+
+
+  // ... (数据加载完成后) ...
+  animateRoute();
   </script>
 </body>
 
